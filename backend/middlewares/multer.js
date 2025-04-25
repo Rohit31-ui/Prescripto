@@ -1,11 +1,26 @@
-import multer from 'multer'
+// middlewares/multer.js
+import multer from 'multer';
+import path from 'path';
 
+// Disk storage setup
 const storage = multer.diskStorage({
-    filename: function(req,file,callback){
-        callback(null,file.originalname)
-    }
-})
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // make sure 'uploads' folder exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
 
-const upload = multer({storage})
+// File filter (optional)
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
 
-export default upload
+const upload = multer({ storage, fileFilter });
+
+export default upload;

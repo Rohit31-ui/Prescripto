@@ -10,6 +10,7 @@ import Appoinment from './pages/Appoinment'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import About from './pages/About'
+import { ToastContainer, toast } from 'react-toastify';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
     
     {/* Navbar */}
     <Navbar/>
+    <ToastContainer />
 
     {/* different routes */}
     <Routes>

@@ -63,7 +63,7 @@ const MyProfile = () => {
         <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
         <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
           <p className='font-medium '>Gender:</p>
-          <p>
+          <div>
             {
               isEdit? 
               <select className='max-w-20 bg-gray-100' onChange={(e)=> setuserData(prev => ({...prev,grnder:e.target.value}))} value={userData.gender}>
@@ -73,9 +73,9 @@ const MyProfile = () => {
               :
               <p className='text-gray-400'>{userData.gender}</p>
             }
-          </p>
+          </div>
 
-            <p className='font-medium'>Borthday:</p>
+            <p className='font-medium'>Birthday:</p>
             {
               isEdit? 
               <input className='max-w-28 bg-gray-100' type="date" onChange={ prev => ({...prev,dob:e.target.value})}  value={userData.dob} /> :

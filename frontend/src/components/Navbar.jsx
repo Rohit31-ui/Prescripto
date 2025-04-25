@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {assets} from '../assets/frontend/assets'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 
 const Navbar = () => {
 
@@ -12,11 +13,17 @@ const navData=[
     {id:4,link:"contact",path:"/contact"}
 ]
 
+
     const navigate=useNavigate();
+    const {token,setToken} = useContext(AppContext)
     //to handle menu button
     const [showMenu,setShowMenu]=useState(false);
-    //to handle login button 
-    const [token,setToken]=useState(true);
+
+    const logout = () => {
+        setToken(false)
+        localStorage.removeItem('token')
+    }
+   
 
 
   return (
@@ -49,7 +56,7 @@ const navData=[
                         <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4 '>
                             <p onClick={()=> navigate('/my-profile')} className='hover:text-black cursor-pointer'>My Profile</p>
                             <p onClick={()=> navigate('my-appoinments')} className='hover:text-black cursor-pointer'>My Appoinments</p>
-                            <p onClick={()=> setToken(false)} className='hover:text-black cursor-pointer'>Logout</p>
+                            <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>
                         </div>
                     </div>
                 </div> :  

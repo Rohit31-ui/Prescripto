@@ -1,13 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { assets } from '../assets/frontend/assets';
 import RelatedDoctors from '../components/RelatedDoctors';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Appoinment = () => {
   const { docId } = useParams();
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, token, getDoctorsData } = useContext(AppContext);
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+  const navigate = useNavigate();
 
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
@@ -21,7 +25,7 @@ const Appoinment = () => {
 
   useEffect(() => {
     if (!docInfo) return;
-    setDocSlots([]);
+    setDocSlots([]); // Reset slots
 
     let today = new Date();
     let newSlots = [];
@@ -31,33 +35,79 @@ const Appoinment = () => {
       currentDate.setDate(today.getDate() + i);
 
       let endTime = new Date(currentDate);
-      endTime.setHours(21, 0, 0, 0);
+      endTime.setHours(21, 0, 0, 0);  // Set end time to 9 PM
 
       if (today.getDate() === currentDate.getDate()) {
-        currentDate.setHours(Math.max(currentDate.getHours() + 1, 10));
-        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+        // For today, set the start time based on current time
+        currentDate.setHours(Math.max(currentDate.getHours() + 1, 10)); // Ensures at least 10 AM
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);  // Start next available slot
       } else {
-        currentDate.setHours(10);
-        currentDate.setMinutes(0);
+        // For other days, start at 10 AM
+        currentDate.setHours(10, 0, 0);
       }
 
       let timeSlots = [];
       while (currentDate < endTime) {
         let formattedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+        // Log the generated time and date for each slot
+        
+
         timeSlots.push({
           datetime: new Date(currentDate),
           time: formattedTime,
         });
 
+        // Increment by 30 minutes for the next slot
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
+
+      // Log each day's slots
+      
 
       newSlots.push(timeSlots);
     }
 
-    setDocSlots(newSlots);
+
+    setDocSlots(newSlots); // Set the new slots for the week
   }, [docInfo]);
+
+  const bookAppoinment = async () => {
+    if (!token) {
+      toast.warn('Login to book appointment');
+      return navigate('/login');
+    }
+
+    try {
+      const date = docSlots[slotIndex][0].datetime;
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      const slotDate = day + "_" + month + "_" + year;
+
+      const { data } = await axios.post(
+        backendUrl + '/api/user/book-appoinment',
+        { docId, slotDate, slotTime },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        getDoctorsData();
+        navigate('/my-appoinments');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   return (
     docInfo && (
@@ -124,16 +174,15 @@ const Appoinment = () => {
               ))}
           </div>
 
-          <button className="bg-blue-500 cursor-pointer text-white text-sm font-light px-14 py-3 rounded-full my-6">
+          <button onClick={bookAppoinment} className="bg-blue-500 cursor-pointer text-white text-sm font-light px-14 py-3 rounded-full my-6">
             Book an Appointment
           </button>
         </div>
-        
+
         {/*-------- listing related doctors------- */}
         <div>
-          <RelatedDoctors docId={docId} speciality={docInfo.speciality}/>
+          <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
         </div>
-
       </div>
     )
   );
