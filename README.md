@@ -7,11 +7,11 @@ This web application allows patients to book doctor appointments online. It feat
 # Key Features:
 Patient Booking: Browse doctors, select time slots, and book appointments.
 
-# Admin Dashboard: Manage appointments, update doctor schedules, and track patient bookings.
+ Admin Dashboard: Manage appointments, update doctor schedules, and track patient bookings.
 
-# Payment Integration: Secure payment processing for online bookings.
+ Payment Integration: Secure payment processing for online bookings.
 
-# User Authentication: Secure login for both patients and admins.
+ User Authentication: Secure login for both patients and admins.
 
 # Technologies:
 Frontend: React.js
