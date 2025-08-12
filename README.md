@@ -14,12 +14,12 @@ Payment Gateway Integration: Secure payment processing to complete the appointme
 User Authentication: Both patients and admins can securely log in to the platform.
 
 # Technologies:
-Frontend: React.js, HTML, CSS, JavaScript
+Frontend: React.js, tailwindCss
 
 Backend: Node.js, Express.js
 
 Database: MongoDB
 
-Payment Gateway: [Your Payment Gateway] (e.g., Stripe, PayPal)
+Payment Gateway: stripe test mode
 
-Authentication: JWT (JSON Web Tokens)
+Authentication: JWT 
