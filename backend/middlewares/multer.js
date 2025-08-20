@@ -1,5 +1,5 @@
 // middlewares/multer.js
-import multer from 'multer';
+import multer from 'multer';//multer is a middleware to manage file handling throughout forms
 import path from 'path';
 
 // Disk storage setup

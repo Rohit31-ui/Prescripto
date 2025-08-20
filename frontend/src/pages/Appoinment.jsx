@@ -9,6 +9,7 @@ import axios from 'axios';
 const Appoinment = () => {
   const { docId } = useParams();
   const { doctors, currencySymbol, backendUrl, token, getDoctorsData } = useContext(AppContext);
+  //days of week
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ const Appoinment = () => {
     setDocSlots(newSlots); // Set the new slots for the week
   }, [docInfo]);
 
+  //function to book an appoinment
   const bookAppoinment = async () => {
     if (!token) {
       toast.warn('Login to book appointment');
@@ -84,7 +86,7 @@ const Appoinment = () => {
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
-      const slotDate = day + "_" + month + "_" + year;
+      const slotDate = day + "-" + month + "-" + year;
 
       const { data } = await axios.post(
         backendUrl + '/api/user/book-appoinment',
@@ -118,6 +120,7 @@ const Appoinment = () => {
             <img src={docInfo.image} alt="" className="bg-blue-400 w-full sm:max-w-72 rounded-lg" />
           </div>
 
+          {/* doctor info display */}
           <div className="flex-1 border border-gray-400 p-8 py-7 rounded-lg bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
             <p className="flex items-center gap-2 text-2xl font-medium text-gray-900">
               {docInfo.name} <img className="w-5" src={assets.verified_icon} alt="" />
@@ -134,6 +137,7 @@ const Appoinment = () => {
               </p>
               <p className="text-sm text-gray-500 max-w-[700px] mt-1">{docInfo.about}</p>
             </div>
+
             <p className="text-gray-500 font-medium mt-4">
               Appointment Fee: <span className="text-gray-600">{currencySymbol}{docInfo.fees}</span>
             </p>
@@ -159,6 +163,7 @@ const Appoinment = () => {
               ))}
           </div>
 
+            
           <div className="flex items-center gap-3 w-full overflow-x-scroll mt-4">
             {docSlots.length > 0 && docSlots[slotIndex] &&
               docSlots[slotIndex].map((item, index) => (
@@ -173,13 +178,14 @@ const Appoinment = () => {
                 </p>
               ))}
           </div>
-
+            
+            {/* button to book an appoinment */}
           <button onClick={bookAppoinment} className="bg-blue-500 cursor-pointer text-white text-sm font-light px-14 py-3 rounded-full my-6">
             Book an Appointment
           </button>
         </div>
 
-        {/*-------- listing related doctors------- */}
+        {/*listing related doctors*/}
         <div>
           <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
         </div>

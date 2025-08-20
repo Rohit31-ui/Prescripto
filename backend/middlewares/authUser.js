@@ -1,25 +1,28 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';//it is used to give authentication at the time of login by generating token and token is match with jwt secret key
 
 const authUser = async (req, res, next) => {
+  //console.log("[authUser] middleware hit");
+  //middleware to check authorisatity of user
   try {
+    //get token
     const authHeader = req.headers.authorization;
 
-    // Check if header exists and starts with 'Bearer'
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ success: false, message: "No token provided" });
     }
 
-    const token = authHeader.split(" ")[1]; // Extract token from 'Bearer <token>'
-
-    // Verify token
+    const token = authHeader.split(' ')[1];
+    //compare token with jwt secret key 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user ID to the request (as userId, not in body ideally)
-    req.userId = decoded.id;
+    console.log("Decoded JWT:", decoded); 
 
-    next(); // Go to next middleware/route
+    // Adjust this line based on payload:
+    req.userId = decoded.id || decoded.user;
+
+    next();
   } catch (error) {
-    console.log(error);
+    console.log("Auth error:", error.message);
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };

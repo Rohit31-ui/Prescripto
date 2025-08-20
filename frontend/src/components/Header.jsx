@@ -23,7 +23,7 @@ const Header = () => {
           </p>
         </div>
 
-        {/* CTA */}
+        {/* book appoinment button */}
         <a 
           href='#speciality' 
           className='flex items-center gap-2 bg-white px-6 py-3 rounded-full text-gray-700 text-sm font-medium hover:scale-105 transition-all duration-300 mt-2'

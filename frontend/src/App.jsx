@@ -11,6 +11,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import About from './pages/About'
 import { ToastContainer, toast } from 'react-toastify';
+import ChatComponent from './components/ChatComponent'
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
     <Navbar/>
     <ToastContainer />
 
-    {/* different routes */}
+    {/* route creation*/}
     <Routes>
         {/* home route */}
         <Route path='/' element={<Home/>}/>
@@ -36,6 +37,8 @@ const App = () => {
 
          {/* about page */}
          <Route path='/about' element={<About/>}/>
+        
+         <Route path='/chat' element={<ChatComponent/>}/>
         
         {/* contact page */}
         <Route path='/contact' element={<Contact/>}/>

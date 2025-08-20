@@ -14,10 +14,14 @@ const navData=[
 ]
 
 
-    const navigate=useNavigate();
+    const navigate=useNavigate();//use navigate hook
+
+    //use context hook
     const {token,setToken} = useContext(AppContext)
-    //to handle menu button
+
+    //to handle menu button at different screen size
     const [showMenu,setShowMenu]=useState(false);
+
 
     const logout = () => {
         setToken(false)
@@ -28,27 +32,32 @@ const navData=[
 
   return (
     <div className='md:mx-20 flex justify-between items-center text-sm py-4 mb-5 border-b border-b-gray-400 mx-10'>
+       
+       {/* desktop menu section */}
+       
        {/* logo image */}
         <img onClick={()=> navigate('/')} src={assets.logo} alt="logo image" className='w-44 cursor-pointer'/>
-
+        
+        {/* hidden for small screen */}
         <ul className='hidden md:flex items-start gap-6 font-medium'>
             {/* mapping navdata items  */}
-    {navData.map(({ id, link, path }) => (
-        <li key={id} className='font-semibold uppercase py-1 hover:underline'>
-            <NavLink to={path}>
-                {link}
-            </NavLink>
-        </li>
-    ))}
-</ul>
+            {navData.map(({ id, link, path }) => (
+                <li key={id} className='font-semibold uppercase py-1 hover:underline'>
+                    <NavLink to={path}>
+                        {link}
+                    </NavLink>
+                </li>
+            ))}
+        </ul>
 
 
         <div className='flex items-center gap-4'>
 
             {
-                // if token true then show dropdown else show create account page
+                // if we are login then show user image and drop down 
                 token? 
-                 //dropdown on hover after profile image
+                
+                /*   dropdown section */
                 <div className='flex items-center gap-2 cursor-pointer group relative'>
                     <img className='w-8 rounded-full' src={assets.profile_pic} alt="profile picture"/>
                     <img className='w-2.5 ' src={assets.dropdown_icon} alt="dropdown icon" />
@@ -60,13 +69,20 @@ const navData=[
                         </div>
                     </div>
                 </div> :  
-                //create account button
-                <button onClick={()=> navigate('/login')} className='px-8 py-3 border bg-blue-400 text-white rounded-full font-light hidden md:block cursor-pointer'>Create account</button>
+                // else show create account button
+                <div className='flex justify-center items-center gap-3'>
+
+                    <button onClick={()=> navigate('/login')} className='px-8 py-3 border bg-blue-400 text-white rounded-full font-light hidden md:block cursor-pointer'>Create account</button>
+                    <button onClick={()=> navigate('/chat')} className='px-8 py-3 border bg-red-400 text-white rounded-full font-light hidden md:block cursor-pointer'>आरोग्य साथी</button>
+                </div>
+
             }
 
+            {/* menu icon image */}
             <img onClick={()=> setShowMenu(true)} src={assets.menu_icon} className='w-6 md:hidden cursor-pointer' alt="" />
-            {/* Mobile menu */}
 
+            
+            {/* Mobile menu */}
             <div className={` ${showMenu? 'fixed w-full' : 'h-0 w-0'} md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}>
                 <div className='flex items-center justify-between px-5 py-6'>
                     <img className='w-36 ' src={assets.logo} alt="" />
@@ -74,10 +90,14 @@ const navData=[
                 </div>
 
                 <ul className='flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium'>
-                    <NavLink className='px-4 py-2 rounded inline-block' onClick={()=> setShowMenu(false)} to='/'>HOME</NavLink>
-                    <NavLink className='px-4 py-2 rounded inline-block' onClick={()=> setShowMenu(false)} to='/doctors'>ALL DOCTORS</NavLink>
-                    <NavLink className='px-4 py-2 rounded inline-block' onClick={()=> setShowMenu(false)} to='/about'>ABOUT</NavLink>
-                    <NavLink className='px-4 py-2 rounded inline-block' onClick={()=> setShowMenu(false)} to='/contact'>CONTACT</NavLink>
+
+                    {navData.map(({ id, link, path }) => (
+                        <li key={id} className='font-semibold uppercase py-1 hover:underline'>
+                            <NavLink onClick={()=> setShowMenu(false)} to={path} className='px-4 py-2 rounded inline-block'>
+                                {link}
+                            </NavLink>
+                        </li>
+                     ))}
                 </ul>
             </div>
 

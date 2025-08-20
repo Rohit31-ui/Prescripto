@@ -6,6 +6,7 @@ const About = () => {
     <div className='mx-20'>
       <div className=' '>
             <div className='text-center text-2xl pt-10 text-gray-500'>
+              {/* heading */}
               <p>
                 ABOUT <span className="text-gray-700 font-medium">US</span>
               </p>
@@ -46,9 +47,11 @@ const About = () => {
     </div>
 
       <div>
+        {/* heading of a section */}
         <p className='text-xl my-4'>Why <span className='text-gray-700 font-semibold'>Choose Us</span></p>
 
         <div className='flex flex-col md:flex-row mb-20'>
+        
           <div className='border px-10 md:px-16 py-8 sm:py-16 flex-col gap-5 text-[15px] hover:bg-blue-500 hover:text-white transition-all duration-300 text-gray-600 cursor-pointer'>
               <b>EFFICIENCY:</b>
               <p>Streamlined appointment scheduling that fits into your busy lifestyle.</p>

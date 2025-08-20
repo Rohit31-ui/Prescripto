@@ -10,13 +10,16 @@ export const AppContext = createContext();
 // Context Provider Component
 const AppContextProvider = ({ children }) => {
   const currencySymbol = '$';
+  //backend url 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   
+  //state for doctors
   const [doctor,setDoctors] = useState([])
 
   const [userData,setUserData] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token')? localStorage.getItem('token') : false);
 
+  
   
   const getDoctorsData = async () =>{
     
@@ -82,6 +85,8 @@ const AppContextProvider = ({ children }) => {
   // },[token])
 
   return (
+
+    //creating children
     <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>

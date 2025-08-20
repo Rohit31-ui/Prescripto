@@ -1,20 +1,20 @@
 import express from 'express'
-import cors from 'cors'
+import cors from 'cors'//for cross plateform origin
 import 'dotenv/config'
-import connectDB from './config/db.js'
+import connectDB from './config/db.js'//for database connection
 import connectCloudinary from './config/cloudinary.js'
 import adminRouter from './routes/adminRoute.js'
 import doctorRouter from './routes/doctorRoute.js'
 import userRouter from './routes/userRoute.js'
-
+//router is used to handle differnt routes like admin,doctor,user
 
 //app config
 const app=express()
-const PORT = process.env.PORT || 4000
-connectDB()
-connectCloudinary()
+const PORT = process.env.PORT || 4000 //pot assigning
+connectDB()//function to connet with database
+connectCloudinary()//useful to upload images and videos
 
-//middlewares
+//builtin middlewares express
 app.use(express.json())
 app.use(cors())
 app.use(express.json());
@@ -31,5 +31,5 @@ app.get('/',(req,res)=>{
     res.send("API WORKING")
 })
 
-
+//server listen 
 app.listen(PORT, ()=> console.log(`server is running at port ${PORT}`))
