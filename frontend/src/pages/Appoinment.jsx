@@ -20,8 +20,16 @@ const Appoinment = () => {
   const [slotTime, setSlotTime] = useState('');
 
   useEffect(() => {
-    const doc = doctors.find((doc) => doc._id === docId);
-    setDocInfo(doc);
+    if (!doctors || doctors.length === 0) return; // wait for doctors to load
+
+  const doc = doctors.find((d) => d._id === docId);
+  console.log(docId)
+  if (!doc) {
+    console.log("Doc info not found for ID:", docId);
+    return;
+  }
+
+  setDocInfo(doc);
   }, [doctors, docId]);
 
   useEffect(() => {
@@ -80,13 +88,18 @@ const Appoinment = () => {
       return navigate('/login');
     }
 
+    if (!docSlots[slotIndex] || docSlots[slotIndex].length === 0 || !slotTime) {
+    toast.error("Please select a valid date and time slot");
+    return;
+  }
+
     try {
       const date = docSlots[slotIndex][0].datetime;
       let day = date.getDate();
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
-      const slotDate = day + "-" + month + "-" + year;
+     const slotDate = `${day}-${month}-${year}`;
 
       const { data } = await axios.post(
         backendUrl + '/api/user/book-appoinment',

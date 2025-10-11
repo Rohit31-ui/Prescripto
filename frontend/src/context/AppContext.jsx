@@ -1,6 +1,4 @@
-import { createContext, useEffect, useState } from "react";
-import React from "react";
-import { doctors } from "../assets/frontend/assets";
+import React,{ createContext, useEffect, useState } from "react";
 import axios from 'axios'
 import { toast } from "react-toastify";
 
@@ -14,7 +12,7 @@ const AppContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   
   //state for doctors
-  const [doctor,setDoctors] = useState([])
+  const [doctors,setDoctors] = useState([])
 
   const [userData,setUserData] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token')? localStorage.getItem('token') : false);
@@ -24,10 +22,11 @@ const AppContextProvider = ({ children }) => {
   const getDoctorsData = async () =>{
     
     try {
-      
       const {data}= await axios.get(backendUrl + '/api/doctor/list' )
+       console.log(data.doctors) 
       if(data.success){
         setDoctors(data.doctors)
+       
       }
       else{
         toast.error(data.message)
@@ -61,7 +60,7 @@ const AppContextProvider = ({ children }) => {
   // }
 
 
-  
+   
   const value = {
     doctors,getDoctorsData,
     currencySymbol,

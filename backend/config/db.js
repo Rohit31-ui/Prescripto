@@ -1,12 +1,23 @@
-import mongoose from "mongoose";//mongoose in odm for connecting mongodb 
+import mongoose from "mongoose";
 
-const connectDB = async () =>{
+// Function to connect MongoDB using mongoose
+const connectDB = async () => {
+  try {
+    // connect() returns a promise
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // helps avoid hanging if DB is unreachable
+    });
 
-    mongoose.connection.on('connected', () => console.log("Database connected"))
-    
-    //method to connect with mongoose database
-    await mongoose.connect(`${process.env.MONGODB_URI}`)
+    console.log("✅ MongoDB connected successfully");
 
-}
 
-export default connectDB
+      mongoose.connection.on("error", (err) => {
+      console.error("❌ MongoDB connection error:", err.message);
+    });
+  } catch (error) {
+    console.error("❌ Error connecting to MongoDB:", error.message);
+    process.exit(1); // stop the server if DB connection fails
+  }
+};
+
+export default connectDB;

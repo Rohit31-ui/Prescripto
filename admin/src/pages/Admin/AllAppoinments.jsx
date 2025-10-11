@@ -13,16 +13,13 @@ const AllAppoinments = () => {
   const { calulateAge, slotDateFormat } = useContext(AppContext);
 
   useEffect(() => {
-    getAllAppoinments()
-      .then((data) => {
-        //console.log('Fetched Appointments:', data);
-        // If necessary, update state or do other actions here
-      })
-      .catch((error) => console.error("Error fetching appointments:", error));
+    getAllAppoinments().catch((error) =>
+      console.error("Error fetching appointments:", error)
+    );
   }, [aToken]);
 
   return (
-    <div className="w-full max-w-6xl ">
+    <div className="w-full max-w-6xl">
       <p className="mb-3 text-lg font-medium">All Appointments</p>
 
       <div className="bg-white border rounded text-sm min-h-[60vh] max-h-[80vh] overflow-y-scroll">
@@ -31,7 +28,7 @@ const AllAppoinments = () => {
           <p>#</p>
           <p>Patient</p>
           <p>Age</p>
-          <p>Date & time</p>
+          <p>Date & Time</p>
           <p>Doctor</p>
           <p>Fees</p>
           <p>Actions</p>
@@ -40,30 +37,40 @@ const AllAppoinments = () => {
         {/* Data rows */}
         {appoinments.map((item, index) => (
           <div
-            key={index}
+            key={item._id || index}
             className="flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-600 py-3 px-6 border-b hover:bg-gray-100"
           >
             <p className="max-sm:hidden">{index + 1}</p>
 
+            {/* Patient Info */}
             <div className="flex items-center gap-2">
+              {console.log(item)}
               <img
-                className="w-8 h-8 rounded-full object-cover"
-                src={item.userdata.image}
+                className="w-8 h-8 rounded-full object-cover border"
+                src={
+                  item.userData?.image ||
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                }
                 alt="patient"
               />
-              <p>{item.userdata.name}</p>
+              <div>
+                <p className="font-medium">{item.userData?.name || "Unknown"}</p>
+                <p className="text-xs text-gray-500">{item.userData?.email}</p>
+              </div>
             </div>
 
-            <p className="max-sm:hidden">{item.age}</p>
+            <p className="max-sm:hidden">
+              {item.age || calulateAge?.(item.userData?.dob) || "-"}
+            </p>
             <p>
               {slotDateFormat(item.slotDate)}, {item.slotTime}
             </p>
-            <p>{item.name}</p>
-            <p>₹{item.fees}</p>
+            <p>{item.name || "—"}</p>
+            <p>₹{item.amount || item.fees}</p>
 
-            {/* Actions (e.g., cancel, details) */}
-            <div className="flex flex-col gap-1">
-              {!item.cancelled && !item.isComplete && (
+            {/* Actions */}
+            <div className="flex flex-col gap-1 text-center">
+              {!item.cancelled && !item.isComplete && !item.isCompleted && (
                 <>
                   <button
                     onClick={() => confirmAppoinment(item._id)}
@@ -87,14 +94,14 @@ const AllAppoinments = () => {
                   </button>
                 </>
               )}
-              {item.cancelled && (
-                <span className="text-xs text-red-500 font-semibold">
-                  Cancelled
+              {(item.cancelled || item.isCancelled) && (
+                <span className="text-sm text-red-500 font-semibold text-center">
+                  Appointment Cancelled
                 </span>
               )}
-              {item.isComplete && (
-                <span className="text-xs text-green-600 font-semibold">
-                  Confirmed
+              {(item.isComplete || item.isCompleted) && (
+                <span className="text-sm text-green-600 font-semibold text-center">
+                  Appointment Confirmed
                 </span>
               )}
             </div>
