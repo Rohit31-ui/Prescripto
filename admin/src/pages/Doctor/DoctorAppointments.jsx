@@ -12,7 +12,7 @@ const DoctorAppointments = () => {
     cancelAppointment,
   } = useContext(DoctorContext);
 
-  const { calculateAge, slotDateFormat, currency } = useContext(AppContext);
+  const { calculateAge,  currency } = useContext(AppContext);
 
   useEffect(() => {
     if (dToken) getAppointments();
@@ -42,17 +42,18 @@ const DoctorAppointments = () => {
             <p className="max-sm:hidden">{index + 1}</p>
 
             <div className="flex items-center gap-2">
+           
               <img
                 className="w-8 h-8 rounded-full object-cover"
-                src={item.userData.image || assets.user_icon}
+                src={item.userdata.image ||  "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt={item.userData.name}
               />
-              <p>{item.userData.name}</p>
+              <p>{item.userdata.name}</p>
             </div>
 
-            <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p>
+            <p className="max-sm:hidden">{calculateAge(item.userData.dob) || "-" }  </p>
             <p>
-              {slotDateFormat(item.slotDate)}, {item.slotTime}
+              {item.slotDate}, {item.slotTime}
             </p>
             <p>
               {currency} {item.amount}
@@ -62,7 +63,7 @@ const DoctorAppointments = () => {
             {item.cancelled ? (
               <p className="text-red-500 font-semibold">Cancelled</p>
             ) : item.isCompleted ? (
-              <p className="text-green-500 font-semibold">Completed</p>
+              <p className="text-green-500 font-semibold">Confirmed</p>
             ) : (
               <div className="flex gap-2">
                 <img

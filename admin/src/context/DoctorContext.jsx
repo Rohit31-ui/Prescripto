@@ -12,12 +12,15 @@ const DoctorContextProvider = (props) => {
   const [dashData, setDashData] = useState(null);
   const [profileData, setProfileData] = useState(null);
 
-  // Fetch all appointments for doctor
+  // ✅ Fetch all appointments for doctor
+
   const getAppointments = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/doctor/appointments`, {
-        headers: { dToken },
-      });
+      const { data } = await axios.post(
+        `${backendUrl}/api/doctor/appointments`,
+        {},
+        { headers: { dtoken: dToken } }
+      );
       if (data.success) setAppointments(data.appointments);
       else toast.error(data.message);
     } catch (error) {
@@ -25,18 +28,27 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  // Mark appointment as complete
+  // Complete appointment
   const completeAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
-        `${backendUrl}/api/doctor/complete-appointment`,
-        { appointmentId },
-        { headers: { dToken } }
+        `${backendUrl}/api/doctor/appointment/complete`,
+        { appointmentId }, // no docId
+        { headers: { dtoken: dToken } }
       );
+
       if (data.success) {
         toast.success(data.message);
-        getAppointments();
-      } else toast.error(data.message);
+
+        // Update local state immediately
+        setAppointments((prev) =>
+          prev.map((item) =>
+            item._id === appointmentId ? { ...item, isCompleted: true } : item
+          )
+        );
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       toast.error(error.message);
     }
@@ -46,25 +58,35 @@ const DoctorContextProvider = (props) => {
   const cancelAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
-        `${backendUrl}/api/doctor/cancel-appointment`,
-        { appointmentId },
-        { headers: { dToken } }
+        `${backendUrl}/api/doctor/appointment/cancel`,
+        { appointmentId }, // no docId
+        { headers: { dtoken: dToken } }
       );
+
       if (data.success) {
         toast.success(data.message);
-        getAppointments();
-      } else toast.error(data.message);
+
+        // Update local state immediately
+        setAppointments((prev) =>
+          prev.map((item) =>
+            item._id === appointmentId ? { ...item, cancelled: true } : item
+          )
+        );
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-  // Get dashboard data
+  //  Get dashboard data
   const getDashData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/doctor/doctor-dashboard`, {
-        headers: { dToken },
+      const { data } = await axios.get(`${backendUrl}/api/doctor/dashboard`, {
+        headers: { dtoken: dToken },
       });
+
       if (data.success) setDashData(data.dashData);
       else toast.error(data.message);
     } catch (error) {
@@ -72,17 +94,59 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  // Get doctor profile data
+  // ✅ Get doctor profile data
   const getProfileData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/doctor/profile-data`, {
-        headers: { dToken },
-      });
+      const { data } = await axios.post(
+        `${backendUrl}/api/doctor/profile`,
+        {},
+        { headers: { dtoken: dToken } }
+      );
       if (data.success) setProfileData(data.profileData);
       else toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const updateProfile = async () => {
+    try {
+      const updateData = {
+        docId: profileData._id, // ✅ include doctor ID
+        address: profileData.address,
+        fees: profileData.fees,
+        available: profileData.available,
+      };
+
+      const { data } = await axios.post(
+        `${backendUrl}/api/doctor/update-profile`,
+        updateData,
+        { headers: { dtoken: dToken } } // must match backend header
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        setIsEdit(false);
+        getProfileData();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.error(error);
+    }
+  };
+
+  const calculateAge = (dob) => {
+    if (!dob) return "-";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   };
 
   const value = {
@@ -91,8 +155,11 @@ const DoctorContextProvider = (props) => {
     backendUrl,
     appointments,
     getAppointments,
+    updateProfile,
+    calculateAge,
     completeAppointment,
     cancelAppointment,
+    setProfileData,
     dashData,
     getDashData,
     profileData,

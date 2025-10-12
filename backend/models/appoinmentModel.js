@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
 const appoinmentSchema = new mongoose.Schema({
-    userId: {type: String , required: true},
-    docId : {type: String, required:true},
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    docId: { type: mongoose.Schema.Types.ObjectId, ref: "doctor" },
     slotDate : {type:String,required:true},
     slotTime : {type:String,required:true},
     userdata : {type:Object,required:true},

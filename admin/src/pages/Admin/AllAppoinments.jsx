@@ -44,26 +44,27 @@ const AllAppoinments = () => {
 
             {/* Patient Info */}
             <div className="flex items-center gap-2">
-              {console.log(item)}
+             
               <img
                 className="w-8 h-8 rounded-full object-cover border"
                 src={
-                  item.userData?.image ||
+                  item.userdata?.image ||
                   "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
                 alt="patient"
               />
+              
               <div>
-                <p className="font-medium">{item.userData?.name || "Unknown"}</p>
-                <p className="text-xs text-gray-500">{item.userData?.email}</p>
+                <p className="font-medium">{item.userdata?.name || "Unknown"}</p>
+                <p className="text-xs text-gray-500">{item.userdata?.email}</p>
               </div>
             </div>
 
             <p className="max-sm:hidden">
-              {item.age || calulateAge?.(item.userData?.dob) || "-"}
+              {item.age || calulateAge?.(item.userdata?.dob) || "-"}
             </p>
             <p>
-              {slotDateFormat(item.slotDate)}, {item.slotTime}
+              {item.slotDate}, {item.slotTime}
             </p>
             <p>{item.name || "—"}</p>
             <p>₹{item.amount || item.fees}</p>

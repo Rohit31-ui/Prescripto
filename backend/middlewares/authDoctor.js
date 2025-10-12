@@ -23,6 +23,7 @@ const authDoctor = async (req, res, next) => {
     }
 
     // Attach doctor ID to request for controller use
+    req.body = req.body || {};
     req.body.docId = decoded.id;
 
     next(); // Proceed to next middleware or route

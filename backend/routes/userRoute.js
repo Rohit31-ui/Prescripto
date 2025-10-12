@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser,loginUser, bookAppoinment, getProfile, listAppoinments, cancelAppoinment,confirmAppoinment,paymentRazorpay, verifyRazorPay } from '../controllers/userController.js';
+import { registerUser,loginUser,getUserAppointments, bookAppoinment, getProfile, listAppoinments, cancelAppoinment,confirmAppoinment,paymentRazorpay, verifyRazorPay } from '../controllers/userController.js';
 import authUser from '../middlewares/authUser.js';
 
 //import { authUser } from '../middleware/authMiddleware.js';
@@ -19,6 +19,7 @@ userRouter.get('/get-profile',authUser,getProfile)
 //userRouter.post('/update-profile',authUser, updateProfile)
 
 userRouter.post('/book-appoinment',authUser,bookAppoinment)
+userRouter.post("/appointments", authUser, getUserAppointments);
 
 userRouter.get('/appoinments',authUser,listAppoinments)
 userRouter.post('/cancel-appoinment',authUser,cancelAppoinment)

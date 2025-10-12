@@ -1,4 +1,4 @@
-import React,{ useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DoctorContext } from "../../context/DoctorContext";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
@@ -24,9 +24,14 @@ const DoctorProfile = () => {
       };
 
       const { data } = await axios.post(
-        backendUrl + "/api/doctor/update-profile",
-        updateData,
-        { headers: { dToken } }
+        `${backendUrl}/api/doctor/profile/update`,
+        {
+          docId: profileData._id,
+          address: profileData.address,
+          fees: profileData.fees,
+          available: profileData.available,
+        },
+        { headers: { dtoken: dToken } }
       );
 
       if (data.success) {
@@ -48,8 +53,11 @@ const DoctorProfile = () => {
     <div className="m-5 flex flex-col gap-4">
       <img
         className="bg-primary w-full sm:max-w-64 rounded-lg"
-        src={profileData.image}
-        alt={profileData.name}
+        src={
+          profileData.image ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+        }
+        alt={profileData.name || "Doctor"}
       />
 
       <div className="flex-1 border border-stone-100 rounded-lg p-8 py-7 bg-white">
@@ -65,7 +73,9 @@ const DoctorProfile = () => {
 
         <div className="mt-3">
           <p className="text-sm font-medium text-neutral-800">About:</p>
-          <p className="text-sm text-gray-600 max-w-[700px] mt-1">{profileData.about}</p>
+          <p className="text-sm text-gray-600 max-w-[700px] mt-1">
+            {profileData.about}
+          </p>
         </div>
 
         <p className="text-gray-600 font-medium mt-4">
@@ -127,7 +137,10 @@ const DoctorProfile = () => {
             checked={profileData.available}
             onChange={() =>
               isEdit &&
-              setProfileData((prev) => ({ ...prev, available: !prev.available }))
+              setProfileData((prev) => ({
+                ...prev,
+                available: !prev.available,
+              }))
             }
           />
           <label>Available</label>
@@ -135,7 +148,7 @@ const DoctorProfile = () => {
 
         <button
           onClick={isEdit ? updateProfile : () => setIsEdit(true)}
-          className="px-4 py-1 border border-primary text-sm rounded-full mt-5 cursor-pointer hover:bg-primary hover:text-white transition-all"
+          className="px-4 py-1 border border-primary bg-blue-500 text-white text-sm rounded-full mt-5 cursor-pointer hover:bg-primary transition-all"
         >
           {isEdit ? "Save" : "Edit"}
         </button>

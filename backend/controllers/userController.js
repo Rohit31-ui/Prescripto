@@ -331,5 +331,27 @@ const verifyRazorPay = async (req,res) =>{
 }
 
 
+const getUserAppointments = async (req, res) => {
+  const { userId } = req.body;
+  const appointments = await appointmentModel
+    .find({ userId })
+    .populate("docId", "name image");
 
-export { registerUser,loginUser,getProfile,bookAppoinment,listAppoinments, cancelAppoinment,confirmAppoinment,paymentRazorpay,verifyRazorPay};
+  res.json({
+    success: true,
+    appointments: appointments.map(app => ({
+      _id: app._id,
+      slotDate: app.slotDate,
+      slotTime: app.slotTime,
+      amount: app.amount,
+      isCompleted: app.isCompleted,
+      cancelled: app.cancelled,
+      doctor: app.docId
+    }))
+  });
+};
+
+
+
+
+export { registerUser,loginUser,getProfile,getUserAppointments, bookAppoinment,listAppoinments, cancelAppoinment,confirmAppoinment,paymentRazorpay,verifyRazorPay};

@@ -119,13 +119,19 @@ const appoinmentsAdmin = async (req, res) => {
   try {
     const appoinments = await appoinmentModel
       .find({})
-      .populate("userId") // userData
-      .populate("docId"); // docData
+      .populate({
+        path: "userId",
+        select: "-password", // exclude password if you want
+      })
+      .populate({
+        path: "docId",
+        select: "-password",
+      }); // docData
 
     // Rename fields to match frontend expectations
     const formatted = appoinments.map((app) => ({
       ...app._doc,
-      userdata: app.userId,
+      userdata: app.userId, // now contains all user info
       docData: app.docId,
     }));
 
@@ -199,4 +205,12 @@ const adminDashBoard = async (req, res) => {
   }
 };
 
-export { addDoctor, loginAdmin, allDoctors, appoinmentsAdmin, adminDashBoard, cancelAppoinment, confirmAppoinment };
+export {
+  addDoctor,
+  loginAdmin,
+  allDoctors,
+  appoinmentsAdmin,
+  adminDashBoard,
+  cancelAppoinment,
+  confirmAppoinment,
+};
