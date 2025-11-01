@@ -1,4 +1,5 @@
 import express from "express";
+//import controllers functions
 import {
   changeAvailability,
   doctorList,
@@ -12,6 +13,7 @@ import {
 } from "../controllers/doctorController.js";
 import authDoctor from "../middlewares/authDoctor.js";
 
+//create router
 const doctorRouter = express.Router();
 
 // Public

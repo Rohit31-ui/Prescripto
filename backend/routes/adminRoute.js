@@ -1,11 +1,15 @@
 import express from 'express'
+//controller functions
 import { addDoctor,adminDashBoard,allDoctors,appoinmentsAdmin,loginAdmin } from '../controllers/adminController.js'
 import upload from '../middlewares/multer.js'
 import authAdmin from '../middlewares/authAdmin.js'
 import { changeAvailability  } from '../controllers/doctorController.js'
 import { cancelAppoinment, confirmAppoinment } from '../controllers/userController.js'
 
+//create router
 const adminRouter = express.Router()
+
+//routes
 adminRouter.post('/add-doctor',authAdmin, upload.single('image'), addDoctor)
 
 adminRouter.post('/login',loginAdmin)

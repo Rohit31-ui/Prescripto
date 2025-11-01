@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken'
 const authAdmin = async (req,res,next) =>{
     //compare token with jwt secret key
     try {
+        //get token
         const {atoken} =req.headers
+        //if not have token
         if(!atoken){
             return res.json({success:false,message:"Not authorised login again"})
         }

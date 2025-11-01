@@ -5,6 +5,7 @@ const authDoctor = async (req, res, next) => {
   try {
     const token = req.headers.dtoken; // custom header 'dtoken'
 
+    //if not have token
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -15,6 +16,7 @@ const authDoctor = async (req, res, next) => {
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    //if they dont match
     if (!decoded?.id) {
       return res.status(403).json({
         success: false,

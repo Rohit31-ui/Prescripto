@@ -9,7 +9,9 @@ import razorpay from 'razorpay'
 // API to register user
 const registerUser = async (req, res) => {
     try {
+        //get data from body
         const { name, email, password } = req.body;
+
         //if any one is not present in the req body
         if (!name || !password || !email) {
             return res.json({ success: false, message: "Missing Details" });
@@ -34,21 +36,29 @@ const registerUser = async (req, res) => {
         // Hash password 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+      
         //store data in userData object
         const userData = {
             name,
             email,
             password: hashedPassword
         };
-            //pass userdata object to store in database
+        
+        //pass userdata object to store in database
         const newUser = new userModel(userData);
         const user = await newUser.save();
 
         // Generate JWT token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        
+
+        //return success messgae
 
         res.json({ success: true, token });
-    } catch (error) {
+
+    }
+    //catch if any error occur 
+    catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
@@ -59,26 +69,32 @@ const registerUser = async (req, res) => {
 //API for user login
 const loginUser = async (req,res) => {
     try {
-        
+        //get data from body
         const {email,password} = req.body
-        //check the user present inndatabase
+
+        //check the user present in database
         const user = await userModel.findOne({email})
+       
         //if dont found email in database
         if(!user) {
            return res.json({success:false,message: 'user does not exist'})
         }
         
+        //compare password 
         const isMatch = await bcrypt.compare(password,user.password)
 
+        //if match then create token and send
         if(isMatch){
             const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
             res.json({success:true,token})
         }
         else{
+            // if password doesnt match
            res.json({success:false,message:"Invalid credentials"}) 
         }
 
     } catch (error) {
+        //catch if any error occur
         console.log(error);
         res.json({ success: false, message: error.message });
     }
@@ -89,12 +105,14 @@ const getProfile = async (req, res) => {
     try {
         // Access userId from req.userId (set by middleware)
         const userId = req.userId;
-
+        //get all userdata
         const userData = await userModel.findById(userId).select('-password');
         
+        //send user info
         res.json({ success: true, userData });
 
     } catch (error) {
+        //catch if any error occur
         console.log(error);
         res.json({ success: false, message: error.message });
     }
@@ -131,24 +149,34 @@ const getProfile = async (req, res) => {
 
 const bookAppoinment = async (req, res) => {
     try {
+
         const userId = req.userId;
+        //get details from body
         const { docId, slotDate, slotTime } = req.body;
 
+        //get doc info
         const docData = await doctorModel.findById(docId).select('-password');
+        //message if not found docdata
         if (!docData) {
             return res.json({ success: false, message: 'Doctor not found' });
         }
+        
 
+        //if doctor not available
         if (!docData.available) {
             return res.json({ success: false, message: 'Doctor not available' });
         }
 
+        //booked slots
         let slots_booked = docData.slots_booked || {};
 
         if (slots_booked[slotDate]) {
+            //if slot not available
             if (slots_booked[slotDate].includes(slotTime)) {
                 return res.json({ success: false, message: 'Slot not available' });
-            } else {
+            }
+            //else add slo in array 
+            else {
                 slots_booked[slotDate].push(slotTime);
             }
         } else {
@@ -156,7 +184,7 @@ const bookAppoinment = async (req, res) => {
         }
 
         const userData = await userModel.findById(userId).select('-password');
-
+        
         const appoinmentData = {
             userId,
             docId,
