@@ -233,7 +233,7 @@ const MyAppoinment = () => {
                     Pay Online
                   </button>
                   <button
-                    onClick={() => cancelAppointment(item._id)}
+                    onClick={() => cancelAppoinment(item._id)}
                     className="text-sm text-stone-500 sm:min-w-48 py-2 border rounded cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-300"
                   >
                     Cancel Appointment
